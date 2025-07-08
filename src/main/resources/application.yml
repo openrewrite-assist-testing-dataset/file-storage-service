@@ -1,0 +1,98 @@
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 8080
+    bindHost: 0.0.0.0
+  adminConnectors:
+    - type: http
+      port: 8081
+      bindHost: 0.0.0.0
+  maxThreads: 200
+  minThreads: 10
+  requestLog:
+    appenders:
+      - type: file
+        currentLogFilename: ./logs/requests.log
+        archivedLogFilenamePattern: ./logs/requests-%d{yyyy-MM-dd}-%i.log.gz
+        archivedFileCount: 30
+
+database:
+  driverClass: com.mysql.cj.jdbc.Driver
+  user: storage_user
+  password: storage_pass
+  url: jdbc:mysql://localhost:3306/file_storage?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+  properties:
+    charSet: UTF-8
+    hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+  maxWaitForConnection: 1s
+  validationQuery: "SELECT 1"
+  validationQueryTimeout: 3s
+  minSize: 8
+  maxSize: 32
+  checkConnectionWhileIdle: false
+  evictionInterval: 10s
+  minIdleTime: 1 minute
+
+s3:
+  accessKey: "test-access-key"
+  secretKey: "test-secret-key"
+  bucketName: "file-storage-bucket"
+  region: "us-east-1"
+  endpoint: null
+  enabled: true
+
+localStorage:
+  basePath: "/tmp/file-storage"
+  enabled: true
+
+logging:
+  level: INFO
+  loggers:
+    com.filestorage: DEBUG
+    org.jdbi: DEBUG
+    com.amazonaws: DEBUG
+    org.apache.tika: DEBUG
+  appenders:
+    - type: console
+      threshold: INFO
+      timeZone: UTC
+      target: stdout
+      logFormat: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    - type: file
+      threshold: DEBUG
+      timeZone: UTC
+      currentLogFilename: ./logs/file-storage.log
+      archivedLogFilenamePattern: ./logs/file-storage-%d{yyyy-MM-dd}-%i.log.gz
+      archivedFileCount: 30
+      maxFileSize: 10MB
+      logFormat: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+metrics:
+  frequency: 1 minute
+  reporters:
+    - type: log
+      logger: metrics
+      markerName: metrics
+
+jwtSecret: "storage-secret-key-2021"
+apiKeys:
+  - "storage-api-key-001"
+  - "storage-api-key-002"
+
+fileUploadLimits:
+  maxFileSize: 104857600  # 100MB
+  maxTotalSize: 1073741824  # 1GB
+  allowedMimeTypes:
+    - "image/jpeg"
+    - "image/png"
+    - "image/gif"
+    - "image/webp"
+    - "application/pdf"
+    - "text/plain"
+    - "application/json"
+    - "application/xml"
+    - "application/zip"
+    - "application/octet-stream"
