@@ -24,9 +24,6 @@ public class FileStorageConfiguration extends Configuration {
     @JsonProperty("jwtSecret")
     private String jwtSecret = "storage-secret-key-2021";
     
-    @JsonProperty("apiKeys")
-    private List<String> apiKeys = List.of("storage-api-key-001", "storage-api-key-002");
-    
     @JsonProperty("fileUploadLimits")
     private FileUploadLimits fileUploadLimits = new FileUploadLimits();
 
@@ -60,14 +57,6 @@ public class FileStorageConfiguration extends Configuration {
 
     public void setJwtSecret(String jwtSecret) {
         this.jwtSecret = jwtSecret;
-    }
-
-    public List<String> getApiKeys() {
-        return apiKeys;
-    }
-
-    public void setApiKeys(List<String> apiKeys) {
-        this.apiKeys = apiKeys;
     }
 
     public FileUploadLimits getFileUploadLimits() {
