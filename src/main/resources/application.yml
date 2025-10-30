@@ -78,9 +78,6 @@ metrics:
       markerName: metrics
 
 jwtSecret: "storage-secret-key-2021"
-apiKeys:
-  - "storage-api-key-001"
-  - "storage-api-key-002"
 
 fileUploadLimits:
   maxFileSize: 104857600  # 100MB

@@ -6,7 +6,7 @@ import com.filestorage.health.S3HealthCheck;
 import com.filestorage.resources.FileResource;
 import com.filestorage.resources.MetadataResource;
 import com.filestorage.auth.JwtAuthFilter;
-import com.filestorage.auth.ApiKeyAuthFilter;
+
 import com.filestorage.db.FileMetadataDAO;
 import com.filestorage.service.FileStorageService;
 import io.dropwizard.Application;
@@ -56,15 +56,7 @@ public class FileStorageApplication extends Application<FileStorageConfiguration
             .setPrefix("Bearer")
             .buildAuthFilter();
             
-        final ContainerRequestFilter apiKeyFilter = new ApiKeyAuthFilter.Builder<Principal>()
-            .setAuthenticator(new com.filestorage.auth.ApiKeyAuthenticator(configuration.getApiKeys()))
-            .setPrefix("ApiKey")
-            .buildAuthFilter();
-            
-        final ChainedAuthFilter chainedAuthFilter = new ChainedAuthFilter(
-            List.of(jwtFilter, apiKeyFilter));
-            
-        environment.jersey().register(new AuthDynamicFeature(chainedAuthFilter));
+        environment.jersey().register(new AuthDynamicFeature(jwtFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
         
         // Register resources
